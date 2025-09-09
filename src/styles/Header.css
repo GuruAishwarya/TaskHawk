@@ -1,0 +1,472 @@
+.header {
+  background: #ffffff;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+}
+
+/* Logo Section */
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-text {
+  font-size: 20px; /* Increased from 18px */
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.task-text {
+  color: #114A92; /* Task in dark blue */
+}
+
+.hawk-text {
+  color: #1a73e8; /* Hawk in existing blue */
+}
+
+/* Navigation */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav-link {
+  color: #5f6368;
+  text-decoration: none;
+  font-size: 16px; /* Increased from 14px */
+  font-weight: 400;
+  padding: 8px 0;
+  transition: color 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #1a73e8;
+}
+
+.nav-link.active {
+  color: #1a73e8;
+  font-weight: 500;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -10px; /* Moved up from -17px */
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #1a73e8;
+  border-radius: 1px;
+}
+
+/* Action Buttons */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-button {
+  background: transparent;
+  border: 1px solid #1a73e8; /* Changed to blue border */
+  color: #1a73e8;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 15px; /* Increased from 14px */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.login-button:hover {
+  background: #f1f6ff;
+  border-color: #1a73e8;
+}
+
+.signup-button {
+  background: #1a73e8;
+  border: 1px solid #1a73e8;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 15px; /* Increased from 14px */
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.signup-button:hover {
+  background: #1557b0;
+  border-color: #1557b0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 12px 16px;
+  }
+  
+  .header-nav {
+    gap: 24px;
+  }
+  
+  .nav-link {
+    font-size: 14px;
+  }
+  
+  .login-button,
+  .signup-button {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+  
+  .nav-link.active::after {
+    bottom: -8px;
+  }
+  
+  .logo-text {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-nav {
+    display: none;
+  }
+  
+  .header-actions {
+    gap: 8px;
+  }
+  
+  .logo-text {
+    font-size: 16
+  }
+}
+
+/* Additional Mobile Responsive Design */
+@media (max-width: 480px) {
+  .header-container {
+    padding: 10px 12px;
+  }
+  
+  .header-logo {
+    gap: 6px;
+  }
+  
+  .logo-text {
+    font-size: 14px;
+  }
+  
+  .login-button,
+  .signup-button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+  
+  .header-actions {
+    gap: 6px;
+  }
+}
+
+/* Button Focus States for Accessibility */
+.login-button:focus,
+.signup-button:focus {
+  outline: 2px solid #1a73e8;
+  outline-offset: 2px;
+}
+
+/* Enhanced Button Interactions */
+.login-button:active {
+  transform: translateY(1px);
+  background: #e8f0fe;
+}
+
+.signup-button:active {
+  transform: translateY(1px);
+  background: #1348a0;
+}
+
+/* Logo Hover Effects */
+.header-logo:hover .logo-icon svg {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+.header-logo:hover .task-text {
+  color: #0d3d7a;
+  transition: color 0.2s ease;
+}
+
+.header-logo:hover .hawk-text {
+  color: #1557b0;
+  transition: color 0.2s ease;
+}
+
+/* Navigation Link Enhanced Hover */
+.nav-link::before {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #1a73e8;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-link:hover::before {
+  width: 100%;
+}
+
+.nav-link.active::before {
+  display: none;
+}
+
+/* Header Shadow on Scroll */
+.header.scrolled {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+/* Button Loading State */
+.login-button.loading,
+.signup-button.loading {
+  position: relative;
+  color: transparent;
+}
+
+.login-button.loading::after,
+.signup-button.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.login-button.loading::after {
+  border-top-color: #1a73e8;
+}
+
+.signup-button.loading::after {
+  border-top-color: white;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .header {
+    border-bottom: 2px solid #000;
+  }
+  
+  .nav-link {
+    color: #000;
+  }
+  
+  .nav-link.active {
+    color: #000;
+    font-weight: 700;
+  }
+  
+  .login-button {
+    border: 2px solid #000;
+    color: #000;
+  }
+  
+  .signup-button {
+    background: #000;
+    border: 2px solid #000;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .nav-link,
+  .login-button,
+  .signup-button,
+  .logo-icon svg {
+    transition: none;
+  }
+  
+  .nav-link::before {
+    transition: none;
+  }
+  
+  .login-button:active,
+  .signup-button:active {
+    transform: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .header {
+    box-shadow: none;
+    border-bottom: 1px solid #000;
+  }
+  
+  .header-actions {
+    display: none;
+  }
+  
+  .nav-link {
+    color: #000;
+  }
+  
+  .task-text,
+  .hawk-text {
+    color: #000;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .header {
+    background: #1f2937;
+    border-bottom: 1px solid #374151;
+  }
+  
+  .nav-link {
+    color: #d1d5db;
+  }
+  
+  .nav-link:hover {
+    color: #60a5fa;
+  }
+  
+  .nav-link.active {
+    color: #60a5fa;
+  }
+  
+  .nav-link.active::after {
+    background: #60a5fa;
+  }
+  
+  .task-text {
+    color: #93c5fd;
+  }
+  
+  .hawk-text {
+    color: #60a5fa;
+  }
+  
+  .login-button {
+    border-color: #60a5fa;
+    color: #60a5fa;
+  }
+  
+  .login-button:hover {
+    background: #1e3a8a;
+  }
+  
+  .signup-button {
+    background: #60a5fa;
+    border-color: #60a5fa;
+  }
+  
+  .signup-button:hover {
+    background: #3b82f6;
+  }
+}
+
+/* Ultra-wide Screen Support */
+@media (min-width: 1400px) {
+  .header-container {
+    max-width: 1400px;
+    padding: 20px 32px;
+  }
+  
+  .header-nav {
+    gap: 48px;
+  }
+  
+  .nav-link {
+    font-size: 17px;
+  }
+  
+  .logo-text {
+    font-size: 22px;
+  }
+}
+
+/* Animation for Header Entrance */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.header {
+  animation: slideDown 0.3s ease-out;
+}
+
+/* Sticky Header Enhancement */
+.header.sticky {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+/* Logo Icon Animation */
+.logo-icon svg {
+  transition: all 0.3s ease;
+}
+
+.header-logo:hover .logo-icon svg circle {
+  fill: #1557b0;
+}
+
+/* Navigation Active State Enhancement */
+.nav-link.active {
+  background: rgba(26, 115, 232, 0.08);
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 0 -12px;
+}
+
+/* Button Group Styling */
+.header-actions {
+  background: rgba(0, 0, 0, 0.02);
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
