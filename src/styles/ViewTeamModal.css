@@ -1,0 +1,299 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.view-team-modal {
+  background: white;
+  border-radius: 8px;
+  width: 320px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border: 1px solid #e0e0e0;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.modal-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #95a5a6;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.close-btn:hover {
+  background: #ecf0f1;
+  color: #2c3e50;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.team-members-section {
+  margin-bottom: 24px;
+}
+
+.team-members-section h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3498db;
+  margin-bottom: 12px;
+}
+
+.members-container {
+  max-height: 120px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 8px;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 4px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.member-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+}
+
+.member-info {
+  flex: 1;
+}
+
+.member-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+
+.member-role-tag {
+  font-size: 10px;
+  color: #7f8c8d;
+  background: #ecf0f1;
+  padding: 2px 6px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.team-details-section {
+  margin-bottom: 24px;
+}
+
+.team-details-section h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.team-description {
+  font-size: 12px;
+  color: #7f8c8d;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.team-statistics {
+  margin-bottom: 24px;
+}
+
+.team-statistics h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #3498db;
+  margin-bottom: 12px;
+}
+
+.stats-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.stats-row:last-child {
+  margin-bottom: 0;
+}
+
+.stat-item {
+  flex: 1;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.stat-number.blue {
+  color: #3498db;
+}
+
+.stat-label {
+  font-size: 11px;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.close-modal-btn,
+.edit-task-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  border: none;
+}
+
+.close-modal-btn {
+  background: #ecf0f1;
+  color: #2c3e50;
+  border: 1px solid #bdc3c7;
+}
+
+.close-modal-btn:hover {
+  background: #d5dbdb;
+}
+
+.edit-task-btn {
+  background: #3498db;
+  color: white;
+}
+
+.edit-task-btn:hover {
+  background: #2980b9;
+}
+
+/* Custom scrollbar for members container */
+.members-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.members-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.members-container::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.members-container::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .view-team-modal {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .stats-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .modal-actions {
+    flex-direction: column;
+  }
+}
+/* Add these styles to your existing ViewTeamModal.css */
+
+.no-team-state {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.no-team-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-team-state h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.no-team-state p {
+  font-size: 14px;
+  color: #7f8c8d;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.no-members {
+  text-align: center;
+  color: #7f8c8d;
+  font-size: 12px;
+  padding: 20px;
+  font-style: italic;
+}
+

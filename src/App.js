@@ -1,18 +1,26 @@
+// import React from 'react';
+// import './App.css';
+// import Teamwork from './pages/Teamwork';
+
+// function App() {
+//   return (
+//     <div className="App">
+//       <Teamwork />
+//     </div>
+//   );
+// }
+
+// export default App;
+
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GetInTouch from './pages/getintouch';
 import './App.css';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<GetInTouch />} />
-          <Route path="/contact" element={<GetInTouch />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="App">
+      <ProfilePage />
+    </div>
   );
 }
 

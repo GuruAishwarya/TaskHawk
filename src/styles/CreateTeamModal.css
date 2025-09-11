@@ -1,0 +1,383 @@
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.create-team-modal {
+  background: white;
+  border-radius: 12px;
+  width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #64748b;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  color: #1e293b;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Styles for member input and added members */
+.member-input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px; /* Space between input row and first added member */
+  align-items: center;
+}
+
+.member-email-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.member-role-select {
+  padding: 6px 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 12px;
+  width: 80px; /* Fixed width for role select */
+}
+
+.add-member-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  background: #3b82f6;
+  color: white;
+}
+
+.add-member-btn:hover {
+  background: #2563eb;
+}
+
+.added-member-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background-color: #f8fafc; /* Light background for added member row */
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.added-member-row:last-of-type {
+  margin-bottom: 0; /* No margin bottom for the last one */
+}
+
+.added-member-name {
+  flex: 1; /* Take up available space */
+  font-size: 13px;
+  color: #1e293b;
+}
+
+.added-member-role {
+  font-size: 12px;
+  color: #64748b;
+  background-color: #e2e8f0; /* Light background for role tag */
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap; /* Prevent role from wrapping */
+}
+
+.remove-member-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  background: #ef4444;
+  color: white;
+}
+
+.remove-member-btn:hover {
+  background: #dc2626;
+}
+
+.task-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.task-header span {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Changed from create-task-btn */
+.add-task-to-list-btn {
+  background: #3b82f6; /* Blue like other add buttons */
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.add-task-to-list-btn:hover {
+  background: #2563eb;
+}
+
+.task-form {
+  background: #1e40af; /* Dark blue background */
+  padding: 16px;
+  border-radius: 8px;
+  color: white;
+  margin-bottom: 15px; /* Space below the task input form */
+}
+
+.task-row {
+  margin-bottom: 12px;
+}
+
+.task-row label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.task-input,
+.task-textarea,
+.task-input-small,
+.task-select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  font-size: 12px;
+  background: white;
+  color: #1e293b;
+}
+
+.task-textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.task-row-inline {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.task-field {
+  flex: 1;
+}
+
+/* New styles for displaying added tasks */
+.added-tasks-list {
+  margin-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 10px;
+}
+
+.added-task-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding: 6px 10px;
+  background-color: #f8fafc;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.added-task-item:last-of-type {
+  margin-bottom: 0;
+}
+
+.added-task-name {
+  flex: 1;
+  font-size: 13px;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.added-task-assignee {
+  font-size: 12px;
+  color: #64748b;
+  background-color: #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.remove-task-btn {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  background: #ef4444;
+  color: white;
+}
+
+.remove-task-btn:hover {
+  background: #dc2626;
+}
+
+.create-btn {
+  width: 100%;
+  background: #1e40af;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background 0.2s;
+}
+
+.create-btn:hover {
+  background: #1d4ed8;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .create-team-modal {
+    width: 90%;
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .create-team-modal {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .member-input-row,
+  .added-member-row,
+  .added-task-item {
+    flex-wrap: wrap; /* Allow items to wrap */
+    justify-content: space-between;
+  }
+
+  .member-email-input {
+    flex-basis: 100%; /* Take full width */
+    margin-bottom: 8px;
+  }
+
+  .member-role-select {
+    flex-basis: calc(50% - 4px); /* Half width for role */
+    margin-bottom: 8px;
+  }
+  
+  .add-member-btn,
+  .remove-member-btn,
+  .remove-task-btn {
+    flex-basis: calc(50% - 4px); /* Half width for buttons */
+    margin-bottom: 8px;
+  }
+
+  .added-member-name,
+  .added-task-name {
+    flex-basis: 100%; /* Full width for name */
+    margin-bottom: 8px;
+  }
+
+  .added-member-role,
+  .added-task-assignee {
+    flex-basis: calc(50% - 4px);
+    margin-bottom: 8px;
+  }
+
+  .task-row-inline {
+    flex-direction: column;
+  }
+}
