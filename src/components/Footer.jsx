@@ -4,7 +4,7 @@ import '../styles/Footer.css';
 const Footer = () => {
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null);
+  const [notification, setNotification] = useState({ show: false, type: '', message: '' });
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -14,157 +14,137 @@ const Footer = () => {
   const handleEmailSubmit = async (e) => {
     e.preventDefault();
     
+    if (!email.trim()) {
+      showNotification('error', 'Please enter your email address');
+      return;
+    }
+
     if (!validateEmail(email)) {
-      setSubmitStatus({
-        type: 'error',
-        message: 'Please enter a valid email address'
-      });
+      showNotification('error', 'Please enter a valid email address');
       return;
     }
 
     setIsSubmitting(true);
-    setSubmitStatus(null);
 
     try {
-      const response = await fetch('/api/newsletter', {
+      // Replace with your actual backend endpoint
+      const response = await fetch('/api/newsletter-signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: email,
-          timestamp: new Date().toISOString(),
-        }),
+        body: JSON.stringify({ email }),
       });
-
-      const result = await response.json();
 
       if (response.ok) {
-        setSubmitStatus({
-          type: 'success',
-          message: 'Successfully subscribed!'
-        });
+        showNotification('success', 'Email successfully subscribed for updates!');
         setEmail('');
       } else {
-        throw new Error(result.message || 'Failed to subscribe');
+        showNotification('error', 'Failed to subscribe. Please try again.');
       }
     } catch (error) {
-      console.error('Newsletter subscription error:', error);
-      setSubmitStatus({
-        type: 'error',
-        message: 'Sorry, there was an error. Please try again later.'
-      });
+      showNotification('error', 'Network error. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  const showNotification = (type, message) => {
+    setNotification({ show: true, type, message });
+    setTimeout(() => {
+      setNotification({ show: false, type: '', message: '' });
+    }, 4000);
+  };
+
   return (
     <footer className="footer">
       <div className="footer-container">
-        {/* Brand Section */}
         <div className="footer-brand">
-          <h2 className="footer-logo">
-            <span className="task-text">Task</span>
-            <span className="hawk-text">Hawk</span>
-          </h2>
-          <p className="footer-description">
-            The smart task scheduler that helps teams work smarter, not harder.
-          </p>
-          
-          {/* Social Icons */}
-          <div className="social-icons">
-            <a href="#" className="social-icon" aria-label="Instagram">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          <div className="footer-logo">
+            <div className="logo-icon">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <circle cx="16" cy="16" r="16" fill="white"/>
+                <path d="M12 8L20 16L12 24" stroke="#2678E1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </a>
-            
-            <a href="#" className="social-icon" aria-label="Twitter">
+            </div>
+            <span>TaskHawk</span>
+          </div>
+          <p>Streamline your productivity with TaskHawk's powerful task management and scheduling capabilities.</p>
+          <div className="footer-social">
+            <a href="#" aria-label="Instagram">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
               </svg>
             </a>
-            
-            <a href="#" className="social-icon" aria-label="Facebook">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            <a href="#" aria-label="LinkedIn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
             </a>
-            
-            <a href="#" className="social-icon" aria-label="LinkedIn">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-                <rect x="2" y="9" width="4" height="12"/>
-                <circle cx="4" cy="4" r="2"/>
+            <a href="#" aria-label="Twitter">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+              </svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
             </a>
           </div>
         </div>
-
-        {/* Quick Links - Centered */}
+        
         <div className="footer-links">
-          <h3 className="footer-section-title">Quick links</h3>
-          <ul className="footer-link-list">
-            <li><a href="/" className="footer-link">Home</a></li>
-            <li><a href="/about" className="footer-link">About Us</a></li>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About Us</a></li>
           </ul>
         </div>
-
-        {/* Newsletter Section - Right Corner */}
+        
         <div className="footer-newsletter">
-          <h3 className="footer-section-title">Subscribe to our newsletter</h3>
+          <h4>Stay Updated</h4>
+          <p>Subscribe to our newsletter for the latest updates and features.</p>
           
-          {submitStatus && (
-            <div className={`status-message ${submitStatus.type}`}>
-              {submitStatus.message}
+          {notification.show && (
+            <div className={`notification ${notification.type}`}>
+              <span className="notification-icon">
+                {notification.type === 'success' ? '✓' : '✕'}
+              </span>
+              {notification.message}
             </div>
           )}
           
-          <form onSubmit={handleEmailSubmit} className="newsletter-form">
-            <div className="email-input-container">
-              <input
-                type="email"
-                placeholder="Enter your e-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="email-input"
-                required
-                disabled={isSubmitting}
-              />
-              <button 
-                type="submit" 
-                className={`subscribe-btn ${isSubmitting ? 'loading' : ''}`}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <div className="loading-spinner"></div>
-                ) : (
-                  <>
-                    Subscribe
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M22 2L11 13"/>
-                      <path d="M22 2L15 22L11 13L2 9L22 2Z"/>
-                    </svg>
-                  </>
-                )}
-              </button>
-            </div>
+          <form className="newsletter-form" onSubmit={handleEmailSubmit}>
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={isSubmitting}
+            />
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <div className="spinner"></div>
+              ) : (
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
+            </button>
           </form>
         </div>
       </div>
-
-      {/* Footer Bottom */}
+      
       <div className="footer-bottom">
-        <div className="footer-bottom-container">
-          <p className="copyright">© 2025 Task Hawk. All rights reserved.</p>
-          <div className="footer-bottom-links">
-            <a href="/terms" className="footer-bottom-link">Terms and conditions</a>
-            <a href="/privacy" className="footer-bottom-link">Privacy Policy</a>
-            <a href="/faq" className="footer-bottom-link">FAQ</a>
-          </div>
+        <div className="footer-copyright">
+          <p>&copy; 2024 TaskHawk. All rights reserved.</p>
+        </div>
+        <div className="footer-legal">
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/terms">Terms of Service</a>
+          <a href="/cookies">Cookie Policy</a>
         </div>
       </div>
     </footer>
