@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Box,
   Container,
@@ -40,17 +41,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
-// 🔹 API base based on environment
+// 🔹 API base URL (local only)
 const API_BASE =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3001/api/users"
-    : "https://taskhawk-backend.onrender.com/api/users";
-
-// 🔹 Helper: single API call
-const callApi = async (endpoint, options) => {
-  const res = await fetch(`${API_BASE}${endpoint}`, options);
-  return res;
-};
+  process.env.NODE_ENV === "production"
+    ? "https://taskhawk-backend.onrender.com"
+    : "http://localhost:3001/api/users";
 
 function Login() {
   const navigate = useNavigate();
@@ -64,29 +59,22 @@ function Login() {
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
   const showSnackbar = (message, severity = "success") =>
     setSnackbar({ open: true, message, severity });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await callApi("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        showSnackbar("Login successful", "success");
-        localStorage.setItem("token", data.token);
-        setTimeout(() => navigate("/"), 1500);
-      } else {
-        showSnackbar(data.message || "Invalid credentials", "error");
-      }
+      const { data } = await axios.post(`${API_BASE}/login`, formData);
+      showSnackbar("Login successful", "success");
+      localStorage.setItem("token", data.token);
+      setTimeout(() => navigate("/"), 1500);
     } catch (error) {
-      console.error("Error:", error);
-      showSnackbar("Server error", "error");
+      showSnackbar(
+        error.response?.data?.message || "Invalid credentials",
+        "error"
+      );
     }
   };
 

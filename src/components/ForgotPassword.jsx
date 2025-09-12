@@ -17,6 +17,7 @@ import { Email, Lock, Visibility, VisibilityOff } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Signup from "./../Assets/Signup.png";
+import axios from "axios";
 
 // 🔹 MUI theme with Fredoka
 const theme = createTheme({
@@ -38,17 +39,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
-// 🔹 API base URL based on environment
+// 🔹 API base URL (same as Login.jsx)
 const API_BASE =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3001/api/users"
-    : "https://taskhawk-backend.onrender.com/api/users";
-
-// 🔹 Single API call helper
-const callApi = async (endpoint, options) => {
-  const res = await fetch(`${API_BASE}${endpoint}`, options);
-  return res;
-};
+  process.env.NODE_ENV === "production"
+    ? "https://taskhawk-backend.onrender.com/api/users"
+    : "http://localhost:3001/api/users";
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -81,7 +76,6 @@ function ForgotPassword() {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
     if (value && index < 5) otpRefs[index + 1].current.focus();
   };
 
@@ -93,21 +87,17 @@ function ForgotPassword() {
   // Step 1: Send OTP
   const handleSendOtp = async () => {
     if (!email) return showSnackbar("Enter your email", "error");
-
     try {
-      const res = await callApi("/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+      const { data } = await axios.post(`${API_BASE}/forgot-password`, {
+        email,
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to send OTP");
-
       showSnackbar(data.message, "success");
       setStep(2);
     } catch (error) {
-      showSnackbar(error.message, "error");
+      showSnackbar(
+        error.response?.data?.message || "Failed to send OTP",
+        "error"
+      );
     }
   };
 
@@ -123,29 +113,25 @@ function ForgotPassword() {
   const handleResetPassword = async () => {
     if (newPassword !== confirmPassword)
       return showSnackbar("Passwords do not match", "error");
-
     try {
       const otpCode = otp.join("").toString();
-      const res = await callApi("/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp: otpCode, newPassword }),
+      const { data } = await axios.post(`${API_BASE}/reset-password`, {
+        email,
+        otp: otpCode,
+        newPassword,
       });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || "Failed to reset password");
-
       showSnackbar(data.message, "success");
       setTimeout(() => navigate("/login"), 2000);
-
-      // Reset form
       setStep(1);
       setEmail("");
       setOtp(["", "", "", "", "", ""]);
       setNewPassword("");
       setConfirmPassword("");
     } catch (error) {
-      showSnackbar(error.message, "error");
+      showSnackbar(
+        error.response?.data?.message || "Failed to reset password",
+        "error"
+      );
     }
   };
 
@@ -201,7 +187,6 @@ function ForgotPassword() {
             </Box>
 
             <Box sx={{ p: 5, overflowY: "auto", flex: 1 }}>
-              {/* Step 1: Email */}
               {step === 1 && (
                 <>
                   <Typography
@@ -238,7 +223,6 @@ function ForgotPassword() {
                 </>
               )}
 
-              {/* Step 2: OTP */}
               {step === 2 && (
                 <>
                   <Typography
@@ -279,7 +263,6 @@ function ForgotPassword() {
                 </>
               )}
 
-              {/* Step 3: Reset password */}
               {step === 3 && (
                 <>
                   <Typography

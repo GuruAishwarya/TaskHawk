@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Container,
@@ -47,17 +48,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
-// 🔹 API base based on environment
+// 🔹 Auto-select API URL: local or deployed
 const API_BASE =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3001/api/users"
-    : "https://taskhawk-backend.onrender.com/api/users";
-
-// 🔹 Helper function
-const callApi = async (endpoint, options) => {
-  const res = await fetch(`${API_BASE}${endpoint}`, options);
-  return res;
-};
+  process.env.NODE_ENV === "production"
+    ? "https://taskhawk-backend.onrender.com"
+    : "http://localhost:3001/api/users";
 
 function SignupPage() {
   const navigate = useNavigate();
@@ -109,69 +104,45 @@ function SignupPage() {
     }
 
     try {
-      const res = await callApi("/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        showSnackbar("OTP sent to your email", "success");
-        setStep(2);
-        setTimer(120);
-        setResendDisabled(true);
-      } else {
-        showSnackbar(data.message || "Something went wrong", "error");
-      }
+      await axios.post(`${API_BASE}/register`, formData);
+      showSnackbar("OTP sent to your email", "success");
+      setStep(2);
+      setTimer(120);
+      setResendDisabled(true);
     } catch (error) {
-      console.error("Error:", error);
-      showSnackbar("Server error", "error");
+      showSnackbar(error.response?.data?.message || "Server error", "error");
     }
   };
 
   // 🔹 Verify OTP
   const handleVerifyOtp = async () => {
     try {
-      const res = await callApi("/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email, otp }),
+      await axios.post(`${API_BASE}/verify-otp`, {
+        email: formData.email,
+        otp,
       });
-
-      const data = await res.json();
-      if (res.ok) {
-        showSnackbar("Email verified successfully", "success");
-        setTimeout(() => navigate("/login"), 1500);
-      } else {
-        showSnackbar(data.message || "OTP verification failed", "error");
-      }
+      showSnackbar("Email verified successfully", "success");
+      setTimeout(() => navigate("/login"), 1500);
     } catch (error) {
-      console.error("Error:", error);
-      showSnackbar("Server error", "error");
+      showSnackbar(
+        error.response?.data?.message || "OTP verification failed",
+        "error"
+      );
     }
   };
 
   // 🔹 Resend OTP
   const handleResendOtp = async () => {
     try {
-      const res = await callApi("/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        showSnackbar("OTP resent successfully", "success");
-        setTimer(120);
-        setResendDisabled(true);
-      } else {
-        showSnackbar(data.message || "Failed to resend OTP", "error");
-      }
+      await axios.post(`${API_BASE}/register`, formData);
+      showSnackbar("OTP resent successfully", "success");
+      setTimer(120);
+      setResendDisabled(true);
     } catch (error) {
-      console.error(error);
-      showSnackbar("Server error", "error");
+      showSnackbar(
+        error.response?.data?.message || "Failed to resend OTP",
+        "error"
+      );
     }
   };
 
@@ -194,6 +165,7 @@ function SignupPage() {
         }}
       >
         <StyledPaper sx={{ width: "100%" }}>
+          {/* Left side image */}
           <Box
             sx={{
               width: "50%",
@@ -210,6 +182,7 @@ function SignupPage() {
             <img src={SignupImg} alt="Signup illustration" />
           </Box>
 
+          {/* Right side form */}
           <Box
             sx={{
               width: { xs: "100%", md: "50%" },
@@ -245,6 +218,7 @@ function SignupPage() {
                   >
                     Create Your Account
                   </Typography>
+
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
@@ -266,6 +240,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
+
                     <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Last Name
@@ -286,6 +261,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
+
                     <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Email
@@ -307,6 +283,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
+
                     <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Phone
@@ -328,6 +305,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
+
                     <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Password
@@ -362,6 +340,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
+
                     <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Confirm Password
