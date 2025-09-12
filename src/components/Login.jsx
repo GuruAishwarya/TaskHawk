@@ -44,7 +44,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 // 🔹 API base URL (local only)
 const API_BASE =
   process.env.NODE_ENV === "production"
-    ? "https://taskhawk-backend.onrender.com"
+    ? "https://taskhawk-backend.onrender.com/api/users"
     : "http://localhost:3001/api/users";
 
 function Login() {

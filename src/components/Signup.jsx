@@ -51,7 +51,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 // 🔹 Auto-select API URL: local or deployed
 const API_BASE =
   process.env.NODE_ENV === "production"
-    ? "https://taskhawk-backend.onrender.com"
+    ? "https://taskhawk-backend.onrender.com/api/users"
     : "http://localhost:3001/api/users";
 
 function SignupPage() {
