@@ -51,7 +51,6 @@ function ForgotPassword() {
     severity: "info",
   });
 
-  // ✅ Create refs at the top level
   const otpRefs = [
     useRef(null),
     useRef(null),
@@ -62,19 +61,19 @@ function ForgotPassword() {
   ];
 
   const handleOtpChange = (value, index) => {
-    if (!/^\d*$/.test(value)) return; // only digits allowed
+    if (!/^\d*$/.test(value)) return;
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
 
     if (value && index < 5) {
-      otpRefs[index + 1].current.focus(); // move to next input
+      otpRefs[index + 1].current.focus();
     }
   };
 
   const handleOtpKeyDown = (e, index) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
-      otpRefs[index - 1].current.focus(); // move to previous input
+      otpRefs[index - 1].current.focus();
     }
   };
 
@@ -97,9 +96,7 @@ function ForgotPassword() {
         }
       );
 
-      const text = await res.text();
-      const data = text ? JSON.parse(text) : {};
-
+      const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to send OTP");
 
       setSnackbar({ open: true, message: data.message, severity: "success" });
@@ -142,16 +139,12 @@ function ForgotPassword() {
         }
       );
 
-      const text = await res.text();
-      const data = text ? JSON.parse(text) : {};
-
+      const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to reset password");
 
       setSnackbar({ open: true, message: data.message, severity: "success" });
 
-      setTimeout(() => {
-        navigate("/login"); // navigate to login
-      }, 2000);
+      setTimeout(() => navigate("/login"), 2000);
 
       setStep(1);
       setEmail("");

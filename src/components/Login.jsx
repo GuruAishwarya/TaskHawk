@@ -39,6 +39,27 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
+// 🔹 API URLs
+const API_LOCAL = "http://localhost:3001/api/users";
+const API_RENDER = "https://taskhawk-backend.onrender.com/api/users";
+
+// 🔹 Helper: call both APIs
+const callBoth = async (endpoint, options) => {
+  const [localRes, renderRes] = await Promise.allSettled([
+    fetch(`${API_LOCAL}${endpoint}`, options),
+    fetch(`${API_RENDER}${endpoint}`, options),
+  ]);
+
+  if (localRes.status === "fulfilled" && localRes.value.ok) {
+    return localRes.value;
+  }
+  if (renderRes.status === "fulfilled" && renderRes.value.ok) {
+    return renderRes.value;
+  }
+
+  throw new Error("Both APIs failed");
+};
+
 function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -57,11 +78,12 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:3001/api/users/login", {
+      const res = await callBoth("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
+
       const data = await res.json();
       if (res.ok) {
         showSnackbar("Login successful", "success");
@@ -89,6 +111,7 @@ function Login() {
         }}
       >
         <StyledPaper sx={{ width: "100%" }}>
+          {/* Left side image */}
           <Box
             sx={{
               width: "50%",
@@ -105,6 +128,7 @@ function Login() {
             <img src={Loginimg} alt="Login illustration" />
           </Box>
 
+          {/* Right side form */}
           <Box
             sx={{
               width: { xs: "100%", md: "50%" },
@@ -144,6 +168,7 @@ function Login() {
                 Welcome Back
               </Typography>
 
+              {/* Email */}
               <Typography variant="body2" fontWeight="500" textAlign="left">
                 Email Address
               </Typography>
@@ -164,6 +189,7 @@ function Login() {
                 }}
               />
 
+              {/* Password */}
               <Box sx={{ mt: 3 }}>
                 <Typography variant="body2" fontWeight="500" textAlign="left">
                   Password
@@ -196,6 +222,7 @@ function Login() {
                 />
               </Box>
 
+              {/* Remember + Forgot */}
               <Box
                 sx={{
                   mt: 2,
@@ -210,6 +237,7 @@ function Login() {
                 </Link>
               </Box>
 
+              {/* Submit button */}
               <Button
                 type="submit"
                 variant="contained"
@@ -224,6 +252,7 @@ function Login() {
                 Let me in
               </Button>
 
+              {/* Signup redirect */}
               <Typography align="center" sx={{ mt: 2 }}>
                 Don’t have an account?{" "}
                 <Link href="/signup" underline="hover">
@@ -234,6 +263,7 @@ function Login() {
           </Box>
         </StyledPaper>
 
+        {/* Snackbar */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={3000}

@@ -47,6 +47,27 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
+// 🔹 API helper (runs local + render in parallel)
+const API_LOCAL = "http://localhost:3001/api/users";
+const API_RENDER = "https://taskhawk-backend.onrender.com/api/users";
+
+const callBoth = async (endpoint, options) => {
+  const [localRes, renderRes] = await Promise.allSettled([
+    fetch(`${API_LOCAL}${endpoint}`, options),
+    fetch(`${API_RENDER}${endpoint}`, options),
+  ]);
+
+  // Prefer local response if available
+  if (localRes.status === "fulfilled" && localRes.value.ok) {
+    return localRes.value;
+  }
+  if (renderRes.status === "fulfilled" && renderRes.value.ok) {
+    return renderRes.value;
+  }
+
+  throw new Error("Both APIs failed");
+};
+
 function SignupPage() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -96,6 +117,7 @@ function SignupPage() {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  // 🔹 Handle signup
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
@@ -104,7 +126,7 @@ function SignupPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:3001/api/users/register", {
+      const res = await callBoth("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -125,9 +147,10 @@ function SignupPage() {
     }
   };
 
+  // 🔹 Handle OTP verification
   const handleVerifyOtp = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/users/verify-otp", {
+      const res = await callBoth("/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email, otp }),
@@ -146,9 +169,10 @@ function SignupPage() {
     }
   };
 
+  // 🔹 Handle Resend OTP
   const handleResendOtp = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/users/register", {
+      const res = await callBoth("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -248,7 +272,7 @@ function SignupPage() {
 
                   <Grid container spacing={2}>
                     {/* First Name */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         First Name
                       </Typography>
@@ -270,7 +294,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Last Name */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Last Name
                       </Typography>
@@ -292,7 +316,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Email */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Email
                       </Typography>
@@ -315,7 +339,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Phone */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Phone
                       </Typography>
@@ -338,7 +362,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Password */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Password
                       </Typography>
@@ -374,7 +398,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Confirm Password */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Confirm Password
                       </Typography>
