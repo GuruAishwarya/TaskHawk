@@ -272,7 +272,7 @@ function SignupPage() {
 
                   <Grid container spacing={2}>
                     {/* First Name */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="body2" fontWeight="500">
                         First Name
                       </Typography>
@@ -294,7 +294,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Last Name */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="body2" fontWeight="500">
                         Last Name
                       </Typography>
@@ -316,7 +316,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Email */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="body2" fontWeight="500">
                         Email
                       </Typography>
@@ -339,7 +339,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Phone */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="body2" fontWeight="500">
                         Phone
                       </Typography>
@@ -362,7 +362,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Password */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="body2" fontWeight="500">
                         Password
                       </Typography>
@@ -398,7 +398,7 @@ function SignupPage() {
                     </Grid>
 
                     {/* Confirm Password */}
-                    <Grid item xs={12} md={6}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <Typography variant="body2" fontWeight="500">
                         Confirm Password
                       </Typography>
