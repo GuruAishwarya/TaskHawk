@@ -29,7 +29,7 @@ const Header = () => {
         {/* Action Buttons */}
         <div className="header-actions">
           <button className="login-button">Login</button>
-          <button className="signup-button">Sign Up</button>
+         <a href="/signup"> <button className="signup-button">Sign Up</button></a>
         </div>
       </div>
     </header>
