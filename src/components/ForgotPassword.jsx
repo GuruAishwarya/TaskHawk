@@ -39,11 +39,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
-// 🔹 API base URL (same as Login.jsx)
-const API_BASE =
-  process.env.NODE_ENV === "production"
-    ? "https://taskhawk-backend.onrender.com/api/users"
-    : "http://localhost:3001/api/users";
+const API_BASE = "http://localhost:3001/api/users";
 
 function ForgotPassword() {
   const navigate = useNavigate();
