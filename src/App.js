@@ -1,6 +1,4 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GetInTouch from './pages/getintouch';
 import './App.css';
 import AboutUs from './pages/About';
 
@@ -19,3 +17,5 @@ function App() {
 }
 
 export default App;
+
+
