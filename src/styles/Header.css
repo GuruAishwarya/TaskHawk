@@ -789,14 +789,6 @@ html {
   margin: 0 -12px;
 }
 
-/* Button Group Styling */
-.header-actions {
-  background: rgba(0, 0, 0, 0.02);
-  padding: 4px;
-  border-radius: 6px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
 /* Header Entrance Animation Enhancement */
 @keyframes fadeInHeader {
   from {

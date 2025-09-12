@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Container,
@@ -14,6 +14,8 @@ import {
   Grid,
   FormControlLabel,
   Checkbox,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   Person,
@@ -25,22 +27,17 @@ import {
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
 import Signup from "./../Assets/Signup.png";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#2678E1",
-    },
-  },
-  typography: {
-    fontFamily: "Fredoka, sans-serif",
-  },
+  palette: { primary: { main: "#2678E1" } },
+  typography: { fontFamily: "Fredoka, sans-serif" },
 });
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   overflow: "hidden",
   borderRadius: 20,
-  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.1)",
+  boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
   display: "flex",
   flexDirection: "row",
   maxHeight: "90vh",
@@ -51,8 +48,131 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 function SignupPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [formData, setFormData] = useState({
+    firstname: "",
+    lastname: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [step, setStep] = useState(1); // 1 = signup, 2 = OTP verify
+  const [otp, setOtp] = useState("");
+
+  // Timer for OTP
+  const [timer, setTimer] = useState(120); // 2 minutes in seconds
+  const [resendDisabled, setResendDisabled] = useState(true);
+
+  // Snackbar state
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  // Countdown timer
+  useEffect(() => {
+    if (step !== 2) return;
+
+    if (timer <= 0) {
+      setResendDisabled(false);
+      return;
+    }
+
+    const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
+    return () => clearInterval(interval);
+  }, [timer, step]);
+
+  // Helper to show snackbar
+  const showSnackbar = (message, severity = "success") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleChange = (e) =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      showSnackbar("Passwords do not match!", "error");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3001/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        showSnackbar("OTP sent to your email", "success");
+        setStep(2);
+        setTimer(120);
+        setResendDisabled(true);
+      } else {
+        showSnackbar(data.message || "Something went wrong", "error");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showSnackbar("Server error", "error");
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/api/users/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, otp }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        showSnackbar("Email verified successfully", "success");
+        setTimeout(() => navigate("/login"), 1500);
+      } else {
+        showSnackbar(data.message || "OTP verification failed", "error");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      showSnackbar("Server error", "error");
+    }
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      const res = await fetch("http://localhost:3001/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        showSnackbar("OTP resent successfully", "success");
+        setTimer(120);
+        setResendDisabled(true);
+      } else {
+        showSnackbar(data.message || "Failed to resend OTP", "error");
+      }
+    } catch (error) {
+      console.error(error);
+      showSnackbar("Server error", "error");
+    }
+  };
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -67,7 +187,7 @@ function SignupPage() {
         }}
       >
         <StyledPaper sx={{ width: "100%" }}>
-          {/* Left side image */}
+          {/* Left image */}
           <Box
             sx={{
               width: "50%",
@@ -78,17 +198,13 @@ function SignupPage() {
                 width: "100%",
                 height: "250px",
               },
-              "& img": {
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              },
+              "& img": { width: "100%", height: "100%", objectFit: "cover" },
             }}
           >
             <img src={Signup} alt="Signup illustration" />
           </Box>
 
-          {/* Right side form */}
+          {/* Right form */}
           <Box
             sx={{
               width: { xs: "100%", md: "50%" },
@@ -96,7 +212,6 @@ function SignupPage() {
               flexDirection: "column",
             }}
           >
-            {/* Header */}
             <Box
               sx={{
                 backgroundColor: "#2678E1",
@@ -106,12 +221,13 @@ function SignupPage() {
               }}
             >
               <Typography variant="h6" fontWeight="bold">
-                Sign Up As
+                {step === 1 ? "Sign Up As" : "Verify OTP"}
               </Typography>
             </Box>
 
-            {/* Form body */}
             <Box
+              component="form"
+              onSubmit={step === 1 ? handleSubmit : (e) => e.preventDefault()}
               sx={{
                 padding: 5,
                 overflowY: "auto",
@@ -119,203 +235,284 @@ function SignupPage() {
                 flex: 1,
               }}
             >
-              <Typography
-                variant="h6"
-                align="center"
-                fontWeight="bold"
-                sx={{ mb: 3 }}
-              >
-                Create Your Account
-              </Typography>
-
-              <Grid container spacing={2}>
-                {/* Firstname */}
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="body2" fontWeight="500" textAlign="left">
-                    First Name
+              {step === 1 ? (
+                <>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    fontWeight="bold"
+                    sx={{ mb: 3 }}
+                  >
+                    Create Your Account
                   </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Enter your first name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Person />
-                        </InputAdornment>
-                      ),
-                      sx: { height: 40, borderRadius: "30px",mt: 2},
-                    }}
-                  />
-                </Grid>
 
-                {/* Lastname */}
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="body2" fontWeight="500" textAlign="left">
-                    Last Name
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Enter your last name"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Person />
-                        </InputAdornment>
-                      ),
-                      sx: { height: 40, borderRadius: "30px",mt: 2},
-                    }}
-                  />
-                </Grid>
+                  <Grid container spacing={2}>
+                    {/* First Name */}
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="body2" fontWeight="500">
+                        First Name
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="firstname"
+                        value={formData.firstname}
+                        onChange={handleChange}
+                        placeholder="Enter your first name"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Person />
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{ mt: 1 }}
+                      />
+                    </Grid>
 
-                {/* Email */}
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="body2" fontWeight="500" textAlign="left">
-                    Email
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Enter your email"
-                    type="email"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Email />
-                        </InputAdornment>
-                      ),
-                      sx: { height: 40, borderRadius: "30px",mt: 2},
-                    }}
-                  />
-                </Grid>
+                    {/* Last Name */}
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="body2" fontWeight="500">
+                        Last Name
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="lastname"
+                        value={formData.lastname}
+                        onChange={handleChange}
+                        placeholder="Enter your last name"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Person />
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{ mt: 1 }}
+                      />
+                    </Grid>
 
-                {/* Phone number */}
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="body2" fontWeight="500" textAlign="left">
-                    Phone Number
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Enter your phone number"
-                    type="tel"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Phone />
-                        </InputAdornment>
-                      ),
-                      sx: { height: 40, borderRadius: "30px",mt: 2},
-                    }}
-                  />
-                </Grid>
+                    {/* Email */}
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="body2" fontWeight="500">
+                        Email
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="Enter your email"
+                        type="email"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Email />
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{ mt: 1 }}
+                      />
+                    </Grid>
 
-                {/* Password */}
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="body2" fontWeight="500" textAlign="left">
-                    Password
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Enter your password"
-                    type={showPassword ? "text" : "password"}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      sx: { height: 40, borderRadius: "30px",mt: 2},
-                    }}
-                  />
-                </Grid>
+                    {/* Phone */}
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="body2" fontWeight="500">
+                        Phone
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        placeholder="Enter your phone number"
+                        type="tel"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Phone />
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{ mt: 1 }}
+                      />
+                    </Grid>
 
-                {/* Confirm Password */}
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Typography variant="body2" fontWeight="500" textAlign="left">
-                    Confirm Password
-                  </Typography>
-                  <TextField
-                    fullWidth
-                    placeholder="Re-enter your password"
-                    type={showConfirmPassword ? "text" : "password"}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Lock />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() =>
-                              setShowConfirmPassword(!showConfirmPassword)
-                            }
-                            edge="end"
-                          >
-                            {showConfirmPassword ? (
-                              <VisibilityOff />
-                            ) : (
-                              <Visibility />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                      sx: { height: 40, borderRadius: "30px",mt: 2},
-                    }}
-                  />
-                </Grid>
-              </Grid>
+                    {/* Password */}
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="body2" fontWeight="500">
+                        Password
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Enter your password"
+                        type={showPassword ? "text" : "password"}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Lock />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={() => setShowPassword(!showPassword)}
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{ mt: 1 }}
+                      />
+                    </Grid>
 
-              {/* Terms & Conditions */}
-              <FormControlLabel
-                control={<Checkbox />}
-                label={
-                  <Typography variant="body2">
-                    I agree to the{" "}
-                    <Link href="#" underline="hover">
-                      Terms and Conditions
-                    </Link>{" "}
-                    and{" "}
-                    <Link href="#" underline="hover">
-                      Privacy Policy
+                    {/* Confirm Password */}
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Typography variant="body2" fontWeight="500">
+                        Confirm Password
+                      </Typography>
+                      <TextField
+                        fullWidth
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="Re-enter your password"
+                        type={showConfirmPassword ? "text" : "password"}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <Lock />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                onClick={() =>
+                                  setShowConfirmPassword(!showConfirmPassword)
+                                }
+                              >
+                                {showConfirmPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                        sx={{ mt: 1 }}
+                      />
+                    </Grid>
+                  </Grid>
+
+                  <FormControlLabel
+                    control={<Checkbox />}
+                    label={
+                      <Typography variant="body2">
+                        I agree to the{" "}
+                        <Link href="#" underline="hover">
+                          Terms and Conditions
+                        </Link>{" "}
+                        and{" "}
+                        <Link href="#" underline="hover">
+                          Privacy Policy
+                        </Link>
+                      </Typography>
+                    }
+                    sx={{ mt: 2 }}
+                  />
+
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    fullWidth
+                    sx={{
+                      mt: 1,
+                      borderRadius: "20px",
+                      textTransform: "none",
+                      py: 1.2,
+                    }}
+                  >
+                    Register Now
+                  </Button>
+
+                  <Typography align="center" sx={{ mt: 2 }}>
+                    Already have an account?{" "}
+                    <Link href="/login" underline="hover">
+                      Log in
                     </Link>
                   </Typography>
-                }
-                sx={{ mt: 2 }}
-              />
+                </>
+              ) : (
+                <>
+                  <Typography
+                    variant="h6"
+                    align="center"
+                    fontWeight="bold"
+                    sx={{ mb: 3 }}
+                  >
+                    Enter OTP sent to {formData.email}
+                  </Typography>
 
-              {/* Submit */}
-              <Button
-                variant="contained"
-                fullWidth
-                sx={{
-                  mt: 1,
-                  borderRadius: "20px",
-                  textTransform: "none",
-                  py: 1.2,
-                }}
-              >
-                Register Now
-              </Button>
+                  <TextField
+                    fullWidth
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="Enter OTP"
+                    sx={{ mb: 2 }}
+                  />
 
-              {/* Already have account */}
-              <Typography align="center" sx={{ mt: 2 }}>
-                Already have an account?{" "}
-                <Link href="#" underline="hover">
-                  Log in
-                </Link>
-              </Typography>
+                  <Typography variant="body2" align="center" sx={{ mb: 2 }}>
+                    Expires in: {formatTime(timer)}
+                  </Typography>
+
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleVerifyOtp}
+                    sx={{ borderRadius: "20px", py: 1.2, mb: 1 }}
+                  >
+                    Verify OTP
+                  </Button>
+
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={handleResendOtp}
+                    disabled={resendDisabled}
+                    sx={{ borderRadius: "20px", py: 1.2 }}
+                  >
+                    Resend OTP
+                  </Button>
+                </>
+              )}
             </Box>
           </Box>
         </StyledPaper>
+
+        {/* Snackbar */}
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={() => setSnackbar({ ...snackbar, open: false })}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+            variant="filled"
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Container>
     </ThemeProvider>
   );
