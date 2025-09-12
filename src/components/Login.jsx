@@ -33,31 +33,23 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
   maxHeight: "90vh",
+  width: "100%",
   [theme.breakpoints.down("md")]: {
     flexDirection: "column",
     maxHeight: "none",
   },
 }));
 
-// 🔹 API URLs
-const API_LOCAL = "http://localhost:3001/api/users";
-const API_RENDER = "https://taskhawk-backend.onrender.com/api/users";
+// 🔹 API base based on environment
+const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3001/api/users"
+    : "https://taskhawk-backend.onrender.com/api/users";
 
-// 🔹 Helper: call both APIs
-const callBoth = async (endpoint, options) => {
-  const [localRes, renderRes] = await Promise.allSettled([
-    fetch(`${API_LOCAL}${endpoint}`, options),
-    fetch(`${API_RENDER}${endpoint}`, options),
-  ]);
-
-  if (localRes.status === "fulfilled" && localRes.value.ok) {
-    return localRes.value;
-  }
-  if (renderRes.status === "fulfilled" && renderRes.value.ok) {
-    return renderRes.value;
-  }
-
-  throw new Error("Both APIs failed");
+// 🔹 Helper: single API call
+const callApi = async (endpoint, options) => {
+  const res = await fetch(`${API_BASE}${endpoint}`, options);
+  return res;
 };
 
 function Login() {
@@ -78,7 +70,7 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await callBoth("/login", {
+      const res = await callApi("/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -103,25 +95,22 @@ function Login() {
       <Container
         maxWidth="lg"
         sx={{
-          py: 4,
-          height: "100vh",
+          py: { xs: 2, sm: 4 },
+          height: { xs: "auto", md: "100vh" },
           display: "flex",
           alignItems: "center",
-          overflowX: "hidden",
+          justifyContent: "center",
         }}
       >
-        <StyledPaper sx={{ width: "100%" }}>
+        <StyledPaper>
           {/* Left side image */}
           <Box
             sx={{
-              width: "50%",
+              width: { xs: "100%", md: "50%" },
+              height: { xs: "200px", sm: "280px", md: "auto" },
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              [theme.breakpoints.down("md")]: {
-                width: "100%",
-                height: "250px",
-              },
               "& img": { width: "100%", height: "100%", objectFit: "cover" },
             }}
           >
@@ -141,10 +130,14 @@ function Login() {
                 backgroundColor: "#2678E1",
                 color: "white",
                 textAlign: "center",
-                py: 4,
+                py: { xs: 2, md: 4 },
               }}
             >
-              <Typography variant="h6" fontWeight="bold">
+              <Typography
+                variant="h6"
+                fontWeight="bold"
+                fontSize={{ xs: 16, sm: 18 }}
+              >
                 Login As
               </Typography>
             </Box>
@@ -152,24 +145,24 @@ function Login() {
             <Box
               component="form"
               onSubmit={handleSubmit}
-              sx={{
-                padding: 5,
-                overflowY: "auto",
-                overflowX: "hidden",
-                flex: 1,
-              }}
+              sx={{ p: { xs: 2, sm: 3, md: 5 }, overflowY: "auto", flex: 1 }}
             >
               <Typography
                 variant="h6"
                 align="center"
                 fontWeight="bold"
-                sx={{ mb: 3 }}
+                sx={{ mb: 3, fontSize: { xs: 16, sm: 18 } }}
               >
                 Welcome Back
               </Typography>
 
               {/* Email */}
-              <Typography variant="body2" fontWeight="500" textAlign="left">
+              <Typography
+                variant="body2"
+                fontWeight="500"
+                textAlign="left"
+                sx={{ fontSize: { xs: 12, sm: 14 } }}
+              >
                 Email Address
               </Typography>
               <TextField
@@ -182,16 +175,26 @@ function Login() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Email />
+                      <Email fontSize="small" />
                     </InputAdornment>
                   ),
-                  sx: { height: 40, borderRadius: "30px", mt: 2 },
+                  sx: {
+                    height: { xs: 36, sm: 40 },
+                    borderRadius: "30px",
+                    mt: 2,
+                    fontSize: { xs: 12, sm: 14 },
+                  },
                 }}
               />
 
               {/* Password */}
               <Box sx={{ mt: 3 }}>
-                <Typography variant="body2" fontWeight="500" textAlign="left">
+                <Typography
+                  variant="body2"
+                  fontWeight="500"
+                  textAlign="left"
+                  sx={{ fontSize: { xs: 12, sm: 14 } }}
+                >
                   Password
                 </Typography>
                 <TextField
@@ -204,7 +207,7 @@ function Login() {
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
-                        <Lock />
+                        <Lock fontSize="small" />
                       </InputAdornment>
                     ),
                     endAdornment: (
@@ -212,12 +215,18 @@ function Login() {
                         <IconButton
                           onClick={() => setShowPassword(!showPassword)}
                           edge="end"
+                          size="small"
                         >
                           {showPassword ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
                     ),
-                    sx: { height: 40, borderRadius: "30px", mt: 2 },
+                    sx: {
+                      height: { xs: 36, sm: 40 },
+                      borderRadius: "30px",
+                      mt: 2,
+                      fontSize: { xs: 12, sm: 14 },
+                    },
                   }}
                 />
               </Box>
@@ -227,12 +236,25 @@ function Login() {
                 sx={{
                   mt: 2,
                   display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
                   justifyContent: "space-between",
-                  alignItems: "center",
+                  alignItems: { xs: "flex-start", sm: "center" },
+                  gap: 1,
                 }}
               >
-                <FormControlLabel control={<Checkbox />} label="Remember me" />
-                <Link href="/forgot" underline="hover" fontSize="14px">
+                <FormControlLabel
+                  control={<Checkbox size="small" />}
+                  label={
+                    <Typography sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                      Remember me
+                    </Typography>
+                  }
+                />
+                <Link
+                  href="/forgot"
+                  underline="hover"
+                  sx={{ fontSize: { xs: 12, sm: 14 } }}
+                >
                   Forgot password?
                 </Link>
               </Box>
@@ -246,14 +268,18 @@ function Login() {
                   mt: 2,
                   borderRadius: "20px",
                   textTransform: "none",
-                  py: 1.2,
+                  py: { xs: 1, sm: 1.2 },
+                  fontSize: { xs: 13, sm: 15 },
                 }}
               >
                 Let me in
               </Button>
 
               {/* Signup redirect */}
-              <Typography align="center" sx={{ mt: 2 }}>
+              <Typography
+                align="center"
+                sx={{ mt: 2, fontSize: { xs: 12, sm: 14 } }}
+              >
                 Don’t have an account?{" "}
                 <Link href="/signup" underline="hover">
                   Sign up

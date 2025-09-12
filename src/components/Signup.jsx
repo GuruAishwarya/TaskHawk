@@ -26,7 +26,7 @@ import {
   VisibilityOff,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import Signup from "./../Assets/Signup.png";
+import SignupImg from "./../Assets/Signup.png";
 import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
@@ -47,25 +47,16 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   },
 }));
 
-// 🔹 API helper (runs local + render in parallel)
-const API_LOCAL = "http://localhost:3001/api/users";
-const API_RENDER = "https://taskhawk-backend.onrender.com/api/users";
+// 🔹 API base based on environment
+const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3001/api/users"
+    : "https://taskhawk-backend.onrender.com/api/users";
 
-const callBoth = async (endpoint, options) => {
-  const [localRes, renderRes] = await Promise.allSettled([
-    fetch(`${API_LOCAL}${endpoint}`, options),
-    fetch(`${API_RENDER}${endpoint}`, options),
-  ]);
-
-  // Prefer local response if available
-  if (localRes.status === "fulfilled" && localRes.value.ok) {
-    return localRes.value;
-  }
-  if (renderRes.status === "fulfilled" && renderRes.value.ok) {
-    return renderRes.value;
-  }
-
-  throw new Error("Both APIs failed");
+// 🔹 Helper function
+const callApi = async (endpoint, options) => {
+  const res = await fetch(`${API_BASE}${endpoint}`, options);
+  return res;
 };
 
 function SignupPage() {
@@ -82,42 +73,34 @@ function SignupPage() {
     confirmPassword: "",
   });
 
-  const [step, setStep] = useState(1); // 1 = signup, 2 = OTP verify
+  const [step, setStep] = useState(1);
   const [otp, setOtp] = useState("");
-
-  // Timer for OTP
-  const [timer, setTimer] = useState(120); // 2 minutes in seconds
+  const [timer, setTimer] = useState(120);
   const [resendDisabled, setResendDisabled] = useState(true);
 
-  // Snackbar state
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
   });
 
-  // Countdown timer
   useEffect(() => {
     if (step !== 2) return;
-
     if (timer <= 0) {
       setResendDisabled(false);
       return;
     }
-
     const interval = setInterval(() => setTimer((prev) => prev - 1), 1000);
     return () => clearInterval(interval);
   }, [timer, step]);
 
-  // Helper to show snackbar
-  const showSnackbar = (message, severity = "success") => {
+  const showSnackbar = (message, severity = "success") =>
     setSnackbar({ open: true, message, severity });
-  };
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  // 🔹 Handle signup
+  // 🔹 Signup
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
@@ -126,7 +109,7 @@ function SignupPage() {
     }
 
     try {
-      const res = await callBoth("/register", {
+      const res = await callApi("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -147,10 +130,10 @@ function SignupPage() {
     }
   };
 
-  // 🔹 Handle OTP verification
+  // 🔹 Verify OTP
   const handleVerifyOtp = async () => {
     try {
-      const res = await callBoth("/verify-otp", {
+      const res = await callApi("/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: formData.email, otp }),
@@ -169,10 +152,10 @@ function SignupPage() {
     }
   };
 
-  // 🔹 Handle Resend OTP
+  // 🔹 Resend OTP
   const handleResendOtp = async () => {
     try {
-      const res = await callBoth("/register", {
+      const res = await callApi("/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -211,7 +194,6 @@ function SignupPage() {
         }}
       >
         <StyledPaper sx={{ width: "100%" }}>
-          {/* Left image */}
           <Box
             sx={{
               width: "50%",
@@ -225,10 +207,9 @@ function SignupPage() {
               "& img": { width: "100%", height: "100%", objectFit: "cover" },
             }}
           >
-            <img src={Signup} alt="Signup illustration" />
+            <img src={SignupImg} alt="Signup illustration" />
           </Box>
 
-          {/* Right form */}
           <Box
             sx={{
               width: { xs: "100%", md: "50%" },
@@ -252,12 +233,7 @@ function SignupPage() {
             <Box
               component="form"
               onSubmit={step === 1 ? handleSubmit : (e) => e.preventDefault()}
-              sx={{
-                padding: 5,
-                overflowY: "auto",
-                overflowX: "hidden",
-                flex: 1,
-              }}
+              sx={{ p: 5, overflowY: "auto", flex: 1 }}
             >
               {step === 1 ? (
                 <>
@@ -269,10 +245,8 @@ function SignupPage() {
                   >
                     Create Your Account
                   </Typography>
-
                   <Grid container spacing={2}>
-                    {/* First Name */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         First Name
                       </Typography>
@@ -292,9 +266,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
-
-                    {/* Last Name */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Last Name
                       </Typography>
@@ -314,9 +286,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
-
-                    {/* Email */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Email
                       </Typography>
@@ -337,9 +307,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
-
-                    {/* Phone */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Phone
                       </Typography>
@@ -360,9 +328,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
-
-                    {/* Password */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Password
                       </Typography>
@@ -396,9 +362,7 @@ function SignupPage() {
                         sx={{ mt: 1 }}
                       />
                     </Grid>
-
-                    {/* Confirm Password */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid item xs={12} md={6}>
                       <Typography variant="body2" fontWeight="500">
                         Confirm Password
                       </Typography>
@@ -484,7 +448,6 @@ function SignupPage() {
                   >
                     Enter OTP sent to {formData.email}
                   </Typography>
-
                   <TextField
                     fullWidth
                     value={otp}
@@ -492,11 +455,9 @@ function SignupPage() {
                     placeholder="Enter OTP"
                     sx={{ mb: 2 }}
                   />
-
                   <Typography variant="body2" align="center" sx={{ mb: 2 }}>
                     Expires in: {formatTime(timer)}
                   </Typography>
-
                   <Button
                     variant="contained"
                     fullWidth
@@ -505,7 +466,6 @@ function SignupPage() {
                   >
                     Verify OTP
                   </Button>
-
                   <Button
                     variant="outlined"
                     fullWidth
@@ -521,7 +481,6 @@ function SignupPage() {
           </Box>
         </StyledPaper>
 
-        {/* Snackbar */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={3000}

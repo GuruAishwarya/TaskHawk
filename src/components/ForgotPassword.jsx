@@ -18,11 +18,13 @@ import { styled } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Signup from "./../Assets/Signup.png";
 
+// 🔹 MUI theme with Fredoka
 const theme = createTheme({
   palette: { primary: { main: "#2678E1" } },
   typography: { fontFamily: "Fredoka, sans-serif" },
 });
 
+// 🔹 Styled Paper
 const StyledPaper = styled(Paper)(({ theme }) => ({
   overflow: "hidden",
   borderRadius: 20,
@@ -35,6 +37,18 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
     maxHeight: "none",
   },
 }));
+
+// 🔹 API base URL based on environment
+const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3001/api/users"
+    : "https://taskhawk-backend.onrender.com/api/users";
+
+// 🔹 Single API call helper
+const callApi = async (endpoint, options) => {
+  const res = await fetch(`${API_BASE}${endpoint}`, options);
+  return res;
+};
 
 function ForgotPassword() {
   const navigate = useNavigate();
@@ -51,14 +65,16 @@ function ForgotPassword() {
     severity: "info",
   });
 
-  const otpRefs = [
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-  ];
+  const otp0 = useRef(null);
+  const otp1 = useRef(null);
+  const otp2 = useRef(null);
+  const otp3 = useRef(null);
+  const otp4 = useRef(null);
+  const otp5 = useRef(null);
+  const otpRefs = [otp0, otp1, otp2, otp3, otp4, otp5];
+
+  const showSnackbar = (message, severity = "success") =>
+    setSnackbar({ open: true, message, severity });
 
   const handleOtpChange = (value, index) => {
     if (!/^\d*$/.test(value)) return;
@@ -66,93 +82,70 @@ function ForgotPassword() {
     newOtp[index] = value;
     setOtp(newOtp);
 
-    if (value && index < 5) {
-      otpRefs[index + 1].current.focus();
-    }
+    if (value && index < 5) otpRefs[index + 1].current.focus();
   };
 
   const handleOtpKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
+    if (e.key === "Backspace" && !otp[index] && index > 0)
       otpRefs[index - 1].current.focus();
-    }
   };
 
+  // Step 1: Send OTP
   const handleSendOtp = async () => {
-    if (!email) {
-      setSnackbar({
-        open: true,
-        message: "Enter your email",
-        severity: "error",
-      });
-      return;
-    }
+    if (!email) return showSnackbar("Enter your email", "error");
+
     try {
-      const res = await fetch(
-        "http://localhost:3001/api/users/forgot-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
+      const res = await callApi("/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to send OTP");
 
-      setSnackbar({ open: true, message: data.message, severity: "success" });
+      showSnackbar(data.message, "success");
       setStep(2);
     } catch (error) {
-      setSnackbar({ open: true, message: error.message, severity: "error" });
+      showSnackbar(error.message, "error");
     }
   };
 
+  // Step 2: Verify OTP locally
   const handleVerifyOtp = () => {
     const otpCode = otp.join("");
-    if (!otpCode || otpCode.length !== 6) {
-      setSnackbar({
-        open: true,
-        message: "Enter valid 6-digit OTP",
-        severity: "error",
-      });
-      return;
-    }
+    if (!otpCode || otpCode.length !== 6)
+      return showSnackbar("Enter valid 6-digit OTP", "error");
     setStep(3);
   };
 
+  // Step 3: Reset password
   const handleResetPassword = async () => {
-    if (newPassword !== confirmPassword) {
-      setSnackbar({
-        open: true,
-        message: "Passwords do not match",
-        severity: "error",
-      });
-      return;
-    }
+    if (newPassword !== confirmPassword)
+      return showSnackbar("Passwords do not match", "error");
+
     try {
-      const otpCode = otp.join("");
-      const res = await fetch(
-        "http://localhost:3001/api/users/reset-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, otp: otpCode, newPassword }),
-        }
-      );
+      const otpCode = otp.join("").toString();
+      const res = await callApi("/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp: otpCode, newPassword }),
+      });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to reset password");
 
-      setSnackbar({ open: true, message: data.message, severity: "success" });
-
+      showSnackbar(data.message, "success");
       setTimeout(() => navigate("/login"), 2000);
 
+      // Reset form
       setStep(1);
       setEmail("");
       setOtp(["", "", "", "", "", ""]);
       setNewPassword("");
       setConfirmPassword("");
     } catch (error) {
-      setSnackbar({ open: true, message: error.message, severity: "error" });
+      showSnackbar(error.message, "error");
     }
   };
 
@@ -169,6 +162,7 @@ function ForgotPassword() {
         }}
       >
         <StyledPaper sx={{ width: "100%" }}>
+          {/* Left image */}
           <Box
             sx={{
               width: "50%",
@@ -185,6 +179,7 @@ function ForgotPassword() {
             <img src={Signup} alt="Forgot password" />
           </Box>
 
+          {/* Right form */}
           <Box
             sx={{
               width: { xs: "100%", md: "50%" },
@@ -205,14 +200,8 @@ function ForgotPassword() {
               </Typography>
             </Box>
 
-            <Box
-              sx={{
-                padding: 5,
-                overflowY: "auto",
-                overflowX: "hidden",
-                flex: 1,
-              }}
-            >
+            <Box sx={{ p: 5, overflowY: "auto", flex: 1 }}>
+              {/* Step 1: Email */}
               {step === 1 && (
                 <>
                   <Typography
@@ -249,6 +238,7 @@ function ForgotPassword() {
                 </>
               )}
 
+              {/* Step 2: OTP */}
               {step === 2 && (
                 <>
                   <Typography
@@ -289,6 +279,7 @@ function ForgotPassword() {
                 </>
               )}
 
+              {/* Step 3: Reset password */}
               {step === 3 && (
                 <>
                   <Typography
@@ -369,6 +360,7 @@ function ForgotPassword() {
           </Box>
         </StyledPaper>
 
+        {/* Snackbar */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={3000}
