@@ -11,7 +11,6 @@ const EditTaskModal = ({ isOpen, onClose, taskData, teamMembers, onTaskUpdated }
   useEffect(() => {
     if (isOpen) {
       if (taskData) {
-        // Fill with actual task data
         setTaskTitle(taskData.name || '');
         setPriority(taskData.priority || 'High');
         setStatus(taskData.status ? taskData.status.charAt(0).toUpperCase() + taskData.status.slice(1) : 'Pending');
