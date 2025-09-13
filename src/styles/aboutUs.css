@@ -1,0 +1,621 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&display=swap');
+
+* {
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+body {
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+.about-us {
+  width: 100%;
+  overflow-x: hidden;
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+/* Hero Section */
+.about-hero {
+  background: linear-gradient(135deg, #114A92 0%, #1e5ba8 100%);
+  background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
+  color: white;
+  padding: 8rem 2rem 6rem;
+  text-align: center;
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(17, 74, 146, 0.8);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+}
+
+.hero-content h1 {
+  font-size: 4rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+.hero-content p {
+  font-size: 1.4rem;
+  margin-bottom: 3rem;
+  opacity: 0.95;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-btn {
+  background: white;
+  color: #114A92;
+  border: 2px solid white;
+  padding: 1rem 2rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 150px;
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+.hero-btn:hover {
+  background: transparent;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+}
+
+.hero-btn.active {
+  background: #114A92;
+  color: white;
+  border-color: #114A92;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Our Story Section */
+.our-story {
+  padding: 6rem 0;
+  background: white;
+}
+
+.our-story h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 3rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600;
+}
+
+.story-content {
+  max-width: 800px;
+  margin: 0 auto 4rem;
+  text-align: center;
+}
+
+.story-content p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  text-align: center;
+  border: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+}
+
+.stat-card h3 {
+  font-size: 2.5rem;
+  color: #114A92;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+.stat-card p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+/* Our Mission Section */
+.our-mission {
+  padding: 6rem 0;
+  background: #f8f9fa;
+}
+
+.mission-card {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.mission-card h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 2rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600;
+}
+
+.mission-card p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #666;
+  margin-bottom: 2rem;
+  text-align: center;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+.mission-list {
+  list-style: none;
+  padding: 0;
+}
+
+.mission-list li {
+  padding: 1rem 0;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 1rem;
+  color: #555;
+  position: relative;
+  padding-left: 2rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+.mission-list li:last-child {
+  border-bottom: none;
+}
+
+.mission-list li::before {
+  content: '•';
+  color: #114A92;
+  font-size: 1.5rem;
+  position: absolute;
+  left: 0;
+  top: 0.8rem;
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+/* Meet Our Team Section */
+.meet-team {
+  padding: 6rem 0;
+  background: #f0f4f8;
+}
+
+.meet-team h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600;
+}
+
+.team-subtitle {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 4rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.team-member {
+  text-align: center;
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.member-image {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid #114A92;
+}
+
+.member-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.team-member h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 500;
+}
+
+.team-member p {
+  color: #666;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.social-links a {
+  width: 40px;
+  height: 40px;
+  background: #114A92;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+.social-links a:hover {
+  background: #0d3a7a;
+  transform: translateY(-2px);
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 6rem 0;
+  background: white;
+}
+
+.cta-card {
+  background: white;
+  padding: 3rem;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #f0f0f0;
+}
+
+.cta-card h2 {
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 1rem;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600;
+}
+
+.cta-card p {
+  font-size: 1.1rem;
+  color: #666;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+.cta-button {
+  background: #114A92;
+  color: white;
+  border: none;
+  padding: 1.2rem 2.5rem;
+  border-radius: 25px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+.cta-button:hover {
+  background: #0d3a7a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(17, 74, 146, 0.3);
+}
+
+/* Final CTA Section */
+.final-cta {
+  background: linear-gradient(135deg, #114A92 0%, #1e5ba8 100%);
+  background-image: url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: overlay;
+  color: white;
+  padding: 5rem 2rem;
+  text-align: center;
+  position: relative;
+}
+
+.cta-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(17, 74, 146, 0.8);
+}
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cta-content h2 {
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 600;
+}
+
+.cta-content p {
+  font-size: 1.3rem;
+  margin-bottom: 2.5rem;
+  opacity: 0.9;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+  font-family: 'Fredoka', sans-serif !important;
+  font-weight: 400;
+}
+
+.get-started-btn {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 1.2rem 2.5rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+.get-started-btn:hover {
+  background: white;
+  color: #114A92;
+  transform: translateY(-2px);
+}
+
+/* Apply Fredoka to all elements */
+h1, h2, h3, h4, h5, h6, p, span, div, button, a, li, ul, ol, input, textarea, select, label {
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+/* Additional font overrides for common elements */
+button, input, optgroup, select, textarea {
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero-content h1 {
+    font-size: 2.5rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-btn {
+    width: 100%;
+    max-width: 250px;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .team-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .mission-card,
+  .cta-card {
+    padding: 2rem;
+  }
+  
+  .mission-card h2,
+  .cta-card h2 {
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .cta-content h2 {
+    font-size: 2rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .our-story h2,
+  .meet-team h2 {
+    font-size: 2rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content h1 {
+    font-size: 2rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .hero-content p {
+    font-size: 1.1rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .about-hero {
+    padding: 6rem 1rem 4rem;
+  }
+  
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .our-story,
+  .our-mission,
+  .meet-team,
+  .cta-section {
+    padding: 4rem 0;
+  }
+  
+  .our-story h2,
+  .mission-card h2,
+  .meet-team h2,
+  .cta-card h2,
+  .cta-content h2 {
+    font-size: 1.8rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .story-content p,
+  .mission-card p,
+  .team-subtitle,
+  .cta-card p,
+  .cta-content p {
+    font-size: 1rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .stat-card h3 {
+    font-size: 2rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .team-member h3 {
+    font-size: 1.2rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .hero-btn,
+  .cta-button,
+  .get-started-btn {
+    font-size: 1rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 320px) {
+  .hero-content h1 {
+    font-size: 1.8rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .hero-content p {
+    font-size: 1rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+  
+  .our-story h2,
+  .mission-card h2,
+  .meet-team h2,
+  .cta-card h2,
+  .cta-content h2 {
+    font-size: 1.5rem;
+    font-family: 'Fredoka', sans-serif !important;
+  }
+}
+
+/* Ensure all text inputs and form elements use Fredoka */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea,
+select {
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+/* Override any potential third-party styles */
+.about-us * {
+  font-family: 'Fredoka', sans-serif !important;
+}
